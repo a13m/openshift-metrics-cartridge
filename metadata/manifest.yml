@@ -19,7 +19,7 @@ Cart-Data:
 Provides:
 - metrics-0.1
 - metrics
-Obsolete: true
+Obsolete: false
 Requires:
 Conflicts:
 Native-Requires:
