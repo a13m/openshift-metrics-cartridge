@@ -24,7 +24,8 @@ $security_arr = array('cgroup.procs',
     'memory.use_hierarchy' => 'gauge',
     'net_cls.classid' => 'gauge',
     'notify_on_release' => 'gauge',
-    'tasks' => 'text');
+    'tasks' => 'text',
+    'report' => 'text');
 
 $item = $_GET['item'];
 
