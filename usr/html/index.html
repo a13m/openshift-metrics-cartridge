@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    
+    <title>App Resources Data</title>
+    
+    <link rel="stylesheet" href="css/style.css">
+    
+    <script type="text/javascript" charset="utf-8">
+      /* Configuration */
+      DATA_URL = '/metrics/read.php'
+      POLL_INTERVAL = 1000 /* 1 second */
+      MAX_DATA_POINTS = 10
+    </script>
+  </head>
+  
+  <body>
+    <header>
+      <h1>App Resource Data</h1>
+    </header>
+    
+    <a href="#" id="pause" title="Pause or resume data updates">Pause data updates</a>
+ 
+    <section id="app-info" class="hidden">
+      <header>
+        <h1>App Info</h1>
+      </header>
+
+      <div class='data'>
+        <div id="freezer">
+          <h3>App status</h3>
+          <div id="freezer.state" class="placeholder static"></div>
+        </div>
+        <div id="net_cls">
+          <h3>Network Class ID</h3>
+          <div id="net_cls.classid" class="placeholder static"></div>
+        </div>
+        <div id="tasklist">
+          <h3>Tasks (pid)</h3>
+          <div id="tasks" class="placeholder"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="cpu" class="hidden">
+      <header>
+        <h1>CPU</h1>
+      </header>
+
+      <div class='data'>
+        <div id="cpu-time">
+          <div class="graph"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="memory">
+      <header>
+        <h1>Memory</h1>
+      </header>
+      
+      <div class='data'>
+        <a href="#" id="swap">Add swap data</a>
+        <section id="text">
+          <div id="stat">
+            <h3>Statistics</h3>
+            <div id="memory.stat" class="placeholder"></div>
+          </div>
+          <div id="failcnt">
+            <h3>Times memory limit reached</h3>
+            <div id="memory.failcnt" class="placeholder"></div>
+            <div id="memory.memsw.failcnt" class="placeholder"></div>
+          </div>
+          <div id="swappiness">
+            <h3>Swappiness</h3>
+            <div id="memory.swappiness" class="placeholder static"></div>
+          </div>
+        </section>
+        <div class="graph"></div>
+      </div>
+    </section>
+    
+    <script src="js/jquery.min.js"></script>
+    <script src="js/flot.min.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/script.js"></script>
+  
+  </body>
+</html>

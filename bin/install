@@ -1,0 +1,13 @@
+#!/bin/bash -e
+
+source $OPENSHIFT_CARTRIDGE_SDK_BASH
+
+ln -s /usr/lib64/httpd/modules ${OPENSHIFT_METRICS_DIR}modules
+ln -s /etc/httpd/conf/magic ${OPENSHIFT_METRICS_DIR}conf/magic
+
+client_result ""
+client_result "metrics added."
+client_result ""
+client_result "URL: https://$OPENSHIFT_GEAR_DNS/metrics/"
+
+cart_props "connection_url=https://$OPENSHIFT_GEAR_DNS/metrics/"

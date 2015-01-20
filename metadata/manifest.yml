@@ -1,0 +1,41 @@
+---
+Name: metrics
+Cartridge-Short-Name: METRICS
+Display-Name: OpenShift Metrics 0.1
+Description: An experimental cartridge that demonstrates retrieving real-time statistics
+  from your application. May be removed or replaced in the future.
+Version: '0.1'
+License: GPLv2
+Cartridge-Version: 0.0.12
+Compatible-Versions:
+Cartridge-Vendor: a13m
+Website: https://www.openshift.com/
+Categories:
+- embedded
+Cart-Data:
+- Key: connection_url
+  Type: cart_data
+  Description: Application metrics URL
+Provides:
+- metrics-0.1
+- metrics
+Obsolete: true
+Requires:
+Conflicts:
+Native-Requires:
+Architecture: noarch
+Reservations:
+- MEM >= 100MB
+Scaling:
+  Min: 1
+  Max: 1
+Endpoints:
+- Private-IP-Name: IP
+  Private-Port-Name: PORT
+  Private-Port: 8080
+  Public-Port-Name: PROXY_PORT
+  Protocols:
+  - http
+  Mappings:
+  - Frontend: /metrics
+    Backend: /metrics

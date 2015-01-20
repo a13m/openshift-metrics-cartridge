@@ -1,0 +1,80 @@
+#!/bin/bash -e
+
+source $OPENSHIFT_CARTRIDGE_SDK_BASH
+
+export PHPRC="${OPENSHIFT_METRICS_DIR}conf/php.ini"
+
+CART_CONFD_DIR=${OPENSHIFT_METRICS_DIR}conf.d
+HTTPD_CFG_FILE=${OPENSHIFT_METRICS_DIR}conf/httpd_nolog.conf
+HTTPD_PID_FILE=${OPENSHIFT_METRICS_DIR}run/httpd.pid
+
+cartridge_type="metrics"
+
+function start() {
+    echo "Starting $cartridge_type cartridge"
+    ensure_valid_httpd_process "$HTTPD_PID_FILE" "$HTTPD_CFG_FILE"
+    update_httpd_passenv $HTTPD_CFG_FILE
+    # Force httpd into its own pgroup, as httpd is hard-coded to TERM everything in
+    # its pgroup during shutdown (even while foregrounded)
+    set -m
+    /usr/sbin/httpd -C "Include ${CART_CONFD_DIR}/*.conf" -f $HTTPD_CFG_FILE -D FOREGROUND |& /usr/bin/logshifter -tag metrics &
+    set +m
+    [ "$?" == "0" ] && wait_for_pid_file $HTTPD_PID_FILE
+}
+
+function stop() {
+    echo "Stopping $cartridge_type cartridge"
+    # Don't exit on errors on stop.
+    set +e
+    ensure_valid_httpd_pid_file "$HTTPD_PID_FILE" "$HTTPD_CFG_FILE"
+    if [ -f "$HTTPD_PID_FILE" ]; then
+      shutdown_httpd_graceful $HTTPD_PID_FILE
+    fi
+}
+
+function restart() {
+    echo "Restarting $cartridge_type cartridge"
+    ensure_httpd_restart_succeed "$HTTPD_PID_FILE" "$HTTPD_CFG_FILE"
+    update_httpd_passenv $HTTPD_CFG_FILE
+    if [ -f "$HTTPD_PID_FILE" ]; then
+        httpd_pid=`cat "$HTTPD_PID_FILE" 2> /dev/null`
+        kill -HUP $httpd_pid
+    else
+        start
+    fi
+}
+
+function status() {
+  if [ -f $HTTPD_PID_FILE ]
+  then
+    if ps --no-headers --pid $(< $HTTPD_PID_FILE) > /dev/null
+    then
+      client_result 'Metrics is running'
+      exit 0
+    fi
+  fi
+  client_result 'Metrics is either stopped or inaccessible'
+}
+
+function reload() {
+    echo "Reloading $cartridge_type cartridge"
+    restart
+}
+
+# Clean up any log files
+function tidy() {
+  client_message "Emptying metrics logs in dir: $OPENSHIFT_LOG_DIR"
+  shopt -s dotglob
+  rm -rf $OPENSHIFT_LOG_DIR/metrics.log*
+}
+
+case "$1" in
+  start)      start ;;
+  stop)       stop ;;
+  restart)    restart ;;
+  status)     status ;;
+  reload)     reload ;;
+  tidy)       tidy ;;
+  *)          exit 0
+esac
+

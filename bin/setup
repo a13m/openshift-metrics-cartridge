@@ -1,0 +1,4 @@
+#!/bin/bash -e
+
+# Create additional directories required by METRICS
+mkdir -p ${OPENSHIFT_METRICS_DIR}/{run,sessions}

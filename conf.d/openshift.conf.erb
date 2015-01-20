@@ -1,0 +1,9 @@
+ServerRoot "<%= ENV['OPENSHIFT_METRICS_DIR'] %>"
+Listen <%= "#{ENV['OPENSHIFT_METRICS_IP']}:#{ENV['OPENSHIFT_METRICS_PORT']}" %>
+User <%= ENV['OPENSHIFT_GEAR_UUID'] %>
+Group <%= ENV['OPENSHIFT_GEAR_UUID'] %>
+ErrorLog "|tee"
+CustomLog "|tee" combined
+
+php_value include_path "."
+
